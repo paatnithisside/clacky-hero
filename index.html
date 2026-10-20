@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clacky hero section, design study</title>
+<meta name="description" content="New hero section for clacky.app: make it, show it, see what works.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F4F1E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
+<style>
+/* Tokens come from clacky_homepage_copy_visual_design_brief.md (sections 9 and 13).
+   Each accent has one job: sky = selection and playhead, sage = success, peach = highlight, lilac = the cursor ripple.
+   The -ink steps are darker versions of the same hues, used only for thin lines and tiny marks. */
+:root {
+  --paper: #F4F1E8;
+  --desk: #ECE8DB;
+  --surface: #FFFFFF;
+  --ink: #242720;
+  --ink-soft: #454840;
+  --muted: #62645D;
+  --line: #E6E5DE;
+  --outline: #7C7E75;
+  --dots: rgba(36, 39, 32, .12);
+  --sky: #A8C3E1;   --sky-wash: #D5E2F0;   --sky-ink: #4F79AE;
+  --sage: #C4D9BC;  --sage-wash: #CFE2C8;  --sage-ink: #4E8C56;  --sage-text: #21502B;
+  --peach: #EEC4AB; --peach-wash: #F6DDCC; --peach-ink: #C9652F;
+  --lilac: #BDB4DE; --lilac-ink: #7B6FC0;
+  --font: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --pad: clamp(20px, 4vw, 48px);
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+/* The dotted desk is the background of the whole hero, nav included */
+body {
+  margin: 0; color: var(--ink);
+  background-color: var(--desk); background-image: radial-gradient(var(--dots) 1px, transparent 1.5px); background-size: 22px 22px;
+  font: 400 16px/1.5 var(--font); font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+
+.skip { position: absolute; left: 12px; top: -72px; z-index: 20; padding: 10px 16px; border-radius: 10px; background: var(--ink); color: var(--paper); font-weight: 600; }
+.skip:focus-visible { top: 12px; }
+
+/* Announcement: quiet by design, never competes with the CTA */
+.announce { padding: 8px var(--pad); background: var(--paper); border-bottom: 1px solid rgba(36, 39, 32, .08); font-size: 13.5px; line-height: 1.35; text-align: center; }
+.announce a { text-decoration: none; }
+.announce a:hover .announce__link { text-decoration: underline; text-underline-offset: 3px; }
+.announce b { font-weight: 600; }
+.announce__more { color: var(--muted); }
+
+/* Navigation */
+.topbar { max-width: 1320px; margin: 0 auto; padding: 10px var(--pad); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.nav { display: flex; align-items: center; gap: 8px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-size: 23px; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+.brand svg { width: 32px; height: 32px; display: block; }
+.nav__links { display: flex; gap: 4px; margin: 0 8px 0 0; padding: 0; list-style: none; }
+.nav__links a { display: block; padding: 9px 13px; border-radius: 10px; font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; transition: background-color .16s, color .16s; }
+.nav__links a:hover { color: var(--ink); background: rgba(36, 39, 32, .06); }
+.menu { display: none; position: relative; }
+.menu summary { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; cursor: pointer; list-style: none; }
+.menu summary::-webkit-details-marker { display: none; }
+.menu summary:hover { background: rgba(36, 39, 32, .06); }
+.menu svg { width: 24px; height: 24px; }
+.menu__panel { position: absolute; right: 0; top: 52px; z-index: 10; min-width: 210px; margin: 0; padding: 8px; list-style: none; background: var(--surface); border-radius: 16px; box-shadow: 0 0 0 1px var(--line), 0 18px 40px -12px rgba(36, 39, 32, .3); }
+.menu__panel a { display: block; padding: 12px 14px; border-radius: 10px; font-weight: 500; text-decoration: none; }
+.menu__panel a:hover { background: var(--paper); }
+
+/* Buttons: the primary one is a matte keycap, since Clacky started as a click-sound app.
+   On hover --rise lifts the key and --edge grows with it, so more of the key's dark side shows as it comes up. */
+.btn {
+  --edge: 3px; --rise: 0px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px;
+  border-radius: 14px; font: 600 16px/1 var(--font); letter-spacing: -.01em; white-space: nowrap; text-decoration: none; cursor: pointer;
+  transform: translateY(calc(var(--rise) * -1));
+  transition: transform .2s var(--ease-out), box-shadow .2s var(--ease-out), background-color .16s; -webkit-tap-highlight-color: transparent;
+}
+.btn--primary { background: var(--ink); color: #FBF9F3; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 var(--edge) 0 #0D0F0B, 0 calc(14px + var(--rise) * 2) calc(22px + var(--rise) * 2) -10px rgba(36, 39, 32, .55); }
+.btn--primary:hover { --rise: 5px; --edge: 8px; }
+.btn--primary:active { --rise: -1px; --edge: 1px; transition-duration: .06s; }
+.btn--quiet { border: 1.5px solid var(--outline); color: var(--ink); background: transparent; }
+.btn--quiet:hover { background: rgba(36, 39, 32, .06); }
+.btn--quiet:active { transform: translateY(1px); }
+.btn--sm { --edge: 2px; min-height: 40px; padding: 0 16px; border-radius: 11px; font-size: 14.5px; }
+.btn--sm.btn--primary:hover { --rise: 4px; --edge: 6px; }
+.btn--sm.btn--primary:active { --rise: -1px; --edge: 1px; }
+
+/* Hero. A two-line headline, then the product on one side and the copy on the other, bottom-aligned with it.
+   The 100cqw sums below keep the headline exactly the size it has always had. */
+.hero { container-type: inline-size; max-width: 1320px; margin: 0 auto; padding: clamp(20px, 2.6vw, 38px) var(--pad) 44px; }
+.hero__grid { --gap: clamp(44px, 4.4vw, 64px); display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
+.title { margin: 0 0 0 -.05em; font-size: clamp(2.1rem, calc(.132 * min(100cqw, 36rem)), 4.2rem); font-weight: 780; line-height: .96; letter-spacing: -.045em; word-spacing: .06em; }
+.title__line { display: inline-block; white-space: nowrap; }
+.title__line:last-child { display: block; }
+.dot { display: inline-block; margin-left: .065em; transform: scale(1.35); transform-origin: 30% 85%; }
+.dot--sky { color: var(--sky-ink); }
+.dot--sage { color: var(--sage-ink); }
+.dot--peach { color: var(--peach-ink); }
+.lede { max-width: 31rem; margin: 26px 0 0; font-size: clamp(1.0625rem, .98rem + .3vw, 1.1875rem); line-height: 1.55; color: var(--ink-soft); text-wrap: pretty; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.fine { max-width: 36rem; margin: 18px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.fine strong { display: block; font-weight: 600; color: var(--ink); }
+.visual { container-type: inline-size; max-width: 840px; margin: 48px 0 0; }
+
+/* Trust: complementary text only. A quiet row between two hairlines at the very end of the hero, free to fall below the fold.
+   The muted tone keeps it subdued while staying above 4.5:1 on the dotted desk. */
+.trust { display: flex; align-items: center; justify-content: space-between; margin: clamp(40px, 5vw, 56px) 0 0; padding: 18px 0; border-block: 1px solid rgba(36, 39, 32, .16); list-style: none; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.trust li { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.trust svg { flex: none; width: 22px; height: 22px; }
+.trust .sep { flex: none; width: 1px; height: 24px; background: rgba(36, 39, 32, .22); }
+
+@media (min-width: 1180px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, .6fr) minmax(0, .4fr);
+    grid-template-rows: auto 1fr auto auto auto auto;
+    grid-template-areas: "title title" "visual ." "visual lede" "visual cta" "visual fine" "trust trust";
+    column-gap: var(--gap);
+  }
+  .title { grid-area: title; margin-bottom: 44px; font-size: clamp(2.1rem, calc(.0528 * (100cqw - var(--gap))), 4.2rem); }
+  .lede { grid-area: lede; margin-top: 0; }
+  .cta { grid-area: cta; margin-top: 32px; }
+  .fine { grid-area: fine; margin: 18px 0 -.4em; }
+  .visual { grid-area: visual; align-self: end; margin-top: 0; }
+  .trust { grid-area: trust; }
+}
+
+/* The product visual. Everything inside .scene is sized in em, so it scales as one composition. */
+.scene { position: relative; width: min(100%, 52.5em); font-size: clamp(11.5px, 1.905cqw, 14.4px); line-height: 1.4; }
+@media (max-width: 1179px) { .scene { font-size: clamp(11.5px, 1.905cqw, 16px); } }
+.stage { position: relative; height: 33.5em; }
+.win { position: absolute; background: var(--surface); border-radius: 1em; }
+
+/* Studio: the hero object */
+.studio { left: 0; top: 0; z-index: 2; width: 42.5em; overflow: hidden; box-shadow: 0 0 0 1px rgba(36, 39, 32, .07), 0 .4em 1em -.2em rgba(36, 39, 32, .08), 1em 2em 4em -1.4em rgba(36, 39, 32, .3); }
+.studio__bar { display: flex; align-items: center; gap: .7em; height: 3.2em; padding: 0 .9em; border-bottom: 1px solid var(--line); }
+.lights { display: flex; gap: .45em; margin-right: .5em; }
+.lights i { width: .8em; height: .8em; border-radius: 50%; }
+.lights i:nth-child(1) { background: #EC6A5E; }
+.lights i:nth-child(2) { background: #F4BF4F; }
+.lights i:nth-child(3) { background: #61C554; }
+.studio__title { font-weight: 650; }
+.studio__proj { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .93em; font-weight: 500; color: var(--muted); }
+.studio__proj::before { content: ""; display: inline-block; width: 1px; height: 1.1em; margin-right: .7em; background: #D2D1C8; vertical-align: -.22em; }
+.chip { display: grid; margin-left: auto; padding: .32em .8em; border-radius: 999px; background: var(--sage-wash); font-size: .86em; font-weight: 600; }
+.chip > span { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: .4em; white-space: nowrap; }
+.chip svg { width: 1.1em; height: 1.1em; }
+.chip__raw { color: #4E5048; opacity: 0; }
+.chip__ready { color: var(--sage-text); }
+.xport { padding: .5em .9em; border-radius: .6em; background: var(--ink); color: #FBF9F3; font-size: .86em; font-weight: 600; white-space: nowrap; }
+
+.studio__body { display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr); gap: 1em; padding: 1em 1em .8em; }
+.vid { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: .7em; background: #FBFAF6; box-shadow: inset 0 0 0 1px var(--line); }
+
+/* The recorded screen: a believable product being demoed */
+.app { position: absolute; inset: 0; display: grid; grid-template-columns: 4.6em minmax(0, 1fr); }
+.app__side { display: flex; flex-direction: column; gap: .7em; padding: 1.1em .8em; background: #F3F1EA; border-right: 1px solid var(--line); }
+.app__side i { height: .75em; border-radius: .4em; background: #DAD8CF; }
+.app__side i:nth-child(1) { background: var(--sky); }
+.app__side i:nth-child(2) { width: 72%; }
+.app__side i:nth-child(3) { width: 86%; }
+.app__side i:nth-child(4) { width: 56%; }
+.app__main { display: flex; flex-direction: column; min-width: 0; padding: 1.2em 1.3em 0; }
+.app__head { display: flex; align-items: center; gap: .6em; margin-bottom: 1em; }
+.app__head b { font-size: 1.3em; font-weight: 700; letter-spacing: -.025em; }
+.app__tag { display: grid; padding: .12em .65em; border-radius: 99px; background: var(--sage-wash); font-size: .8em; font-weight: 600; }
+.app__tag > span { grid-area: 1 / 1; }
+.tag__a { color: var(--muted); opacity: 0; }
+.tag__b { color: var(--sage-text); }
+.app__list { display: grid; gap: .7em; margin: 0; padding: 0; list-style: none; font-size: 1em; color: var(--ink-soft); }
+.app__list li { display: flex; align-items: center; gap: .65em; white-space: nowrap; }
+.tick { flex: none; display: grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; background: var(--sage); color: var(--sage-text); }
+.tick svg { width: .9em; height: .9em; }
+.app__foot { display: flex; justify-content: flex-end; margin-top: auto; padding-bottom: 3.4em; }
+
+.pub { position: relative; display: grid; font-size: 1em; font-weight: 600; }
+.pub__a, .pub__b { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: .4em; padding: .6em 1.2em; border-radius: .65em; white-space: nowrap; }
+.pub svg { width: 1em; height: 1em; }
+.pub__a { background: var(--ink); color: #FBF9F3; opacity: 0; }
+.pub__b { background: var(--sage); color: var(--sage-text); }
+.cursor { position: absolute; left: 86%; top: 58%; z-index: 2; width: 1.7em; height: auto; pointer-events: none; filter: drop-shadow(0 .12em .18em rgba(0, 0, 0, .28)); }
+.ripple { position: absolute; left: 86%; top: 58%; width: 4em; height: 4em; margin: -2em 0 0 -2em; border: .14em solid var(--lilac-ink); border-radius: 50%; background: color-mix(in srgb, var(--lilac) 38%, transparent); opacity: .4; pointer-events: none; }
+.ripple::after { content: ""; position: absolute; inset: -.15em; border: .12em solid var(--lilac-ink); border-radius: 50%; opacity: 0; }
+
+.caption-wrap { position: absolute; left: 0; right: 0; bottom: .8em; display: flex; justify-content: center; padding: 0 .8em; pointer-events: none; }
+.caption { max-width: 100%; padding: .42em .85em; border-radius: .6em; background: #2B2E27; color: #FBF9F3; font-size: .93em; font-weight: 600; line-height: 1.3; text-align: center; text-wrap: balance; }
+
+.tx { display: flex; flex-direction: column; gap: .85em; min-width: 0; line-height: 1.5; }
+.tx p { margin: 0; color: var(--muted); }
+.tx__h { font-size: .86em; font-weight: 600; }
+.tx .tx__on { color: var(--ink); }
+.tx__hl { padding: .05em .2em; border-radius: .3em; background: var(--sky-wash); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.tx__cut { position: relative; padding: .05em .25em; border-radius: .3em; background: var(--peach-wash); color: var(--ink-soft); }
+.tx__cut::after { content: ""; position: absolute; left: .2em; right: .2em; top: 56%; height: 1.5px; background: var(--ink-soft); transform-origin: left; }
+
+.tl { position: relative; height: 3.4em; margin: 0 1em 1em; overflow: hidden; border-radius: .7em; background: #F7F5EE; box-shadow: inset 0 0 0 1px var(--line); }
+.wave { position: absolute; inset: .35em .8em; width: calc(100% - 1.6em); height: calc(100% - .7em); color: #CCCDC4; overflow: visible; }
+.wave--on { color: var(--sky-ink); clip-path: inset(0 38% 0 0); }
+.tl__sel { position: absolute; top: .3em; bottom: .3em; left: calc(.8em + (100% - 1.6em) * .34); width: calc((100% - 1.6em) * .42); border-radius: .4em; background: color-mix(in srgb, var(--sky) 28%, transparent); box-shadow: inset 0 0 0 1px var(--sky); transform-origin: left; }
+.tl__cut { position: absolute; top: .3em; bottom: .3em; left: calc(.8em + (100% - 1.6em) * .262); width: calc((100% - 1.6em) * .052); border-radius: .25em; background: repeating-linear-gradient(135deg, var(--peach) 0 .22em, var(--peach-wash) .22em .44em); transform-origin: center; }
+.tl__head { position: absolute; top: .12em; bottom: .12em; left: calc(.8em + (100% - 1.6em) * .62); width: .22em; margin-left: -.11em; border-radius: 1em; background: var(--sky-ink); }
+.tl__head::before { content: ""; position: absolute; top: -.1em; left: 50%; width: .8em; height: .8em; margin-left: -.4em; border-radius: 50%; background: var(--sky-ink); }
+
+/* Analytics: tucked over Studio's lower corner, sample data */
+.an { right: 0; bottom: 0; z-index: 3; width: 21.5em; padding: 1em 1.2em 1.05em; border-radius: 1.1em; box-shadow: 0 0 0 1px rgba(36, 39, 32, .07), 0 .3em .8em -.2em rgba(36, 39, 32, .07), .8em 1.4em 2.6em -1.2em rgba(36, 39, 32, .24); }
+.an__head { display: flex; align-items: center; justify-content: space-between; gap: .8em; font-weight: 650; }
+.tag { padding: .15em .65em; border: 1px solid #D2D1C8; border-radius: 99px; font-size: .8em; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.an__vis { display: flex; align-items: flex-end; justify-content: space-between; gap: 1em; margin-top: .6em; }
+.an__num { display: block; font-size: 1.9em; font-weight: 700; line-height: 1; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+.an__lbl { display: block; margin-top: .35em; font-size: .82em; line-height: 1.2; color: var(--muted); }
+.spark { flex: none; width: 6.4em; height: 2.4em; overflow: visible; fill: none; stroke: var(--sky-ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.spark path { stroke-dasharray: 1; }
+.an__src { display: grid; gap: .2em; margin: .7em 0 0; padding: 0; list-style: none; }
+.src { position: relative; display: grid; grid-template-columns: 5.2em minmax(0, 1fr) 2.6em; align-items: center; gap: .7em; margin: 0 -.5em; padding: .22em .5em; font-size: .88em; }
+.src > * { position: relative; }
+.src--top::before { content: ""; position: absolute; inset: 0; border-radius: .5em; background: var(--peach-wash); }
+.bar { height: .5em; overflow: hidden; border-radius: 9px; background: #E9E7DE; }
+.bar i { display: block; width: var(--w); height: 100%; border-radius: inherit; background: #BDBFB5; transform-origin: left; }
+.src--top .bar i { background: var(--peach-ink); }
+.src b { text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; }
+.an__foot { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-top: .6em; padding-top: .65em; border-top: 1px solid var(--line); }
+.an__foot b { display: block; margin-top: .15em; font-size: 1.25em; font-weight: 700; line-height: 1.1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.an__foot .an__lbl { margin-top: 0; }
+
+/* Agent notification: a macOS-style toast that lands last, on top of Studio's edge */
+.notif { position: absolute; right: 2.4em; top: 12.6em; z-index: 4; width: 22.5em; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .85em; padding: .8em 1em .8em .8em; border-radius: 1.35em; background: var(--surface); box-shadow: 0 0 0 1px rgba(36, 39, 32, .06), 0 .5em 1.2em -.3em rgba(36, 39, 32, .14), 1em 2em 3.4em -1em rgba(36, 39, 32, .32); }
+.notif__icon { display: block; width: 2.9em; height: 2.9em; }
+.notif__txt { display: grid; gap: .15em; min-width: 0; line-height: 1.25; }
+.notif__txt b { font-size: .98em; font-weight: 650; }
+.notif__txt span { font-size: .88em; color: var(--muted); }
+.notif__time { align-self: start; margin-top: .2em; font-size: .78em; color: var(--muted); }
+
+.replay { position: absolute; left: 0; top: 27em; z-index: 2; display: inline-flex; align-items: center; gap: .55em; min-height: 40px; padding: 0 1.1em 0 .9em; border: 1.5px solid var(--outline); border-radius: 999px; background: transparent; font: 600 1em/1 var(--font); color: var(--ink); cursor: pointer; transition: background-color .16s; }
+.replay:hover { background: rgba(36, 39, 32, .07); }
+.replay svg { width: 1.2em; height: 1.2em; }
+.replay[hidden] { display: none; }
+@media (pointer: coarse) { .replay { min-height: 44px; } }
+
+/* Click ripple that follows a visitor's own click inside Studio: the product's ripple feature, shown not told */
+.pulse { position: absolute; z-index: 5; width: 3.4em; height: 3.4em; margin: -1.7em 0 0 -1.7em; border: .2em solid var(--lilac-ink); border-radius: 50%; background: color-mix(in srgb, var(--lilac) 55%, transparent); pointer-events: none; animation: k-pulse .75s cubic-bezier(.2, .7, .2, 1) forwards; }
+
+/* One procedure, three steps, about 4.7 seconds, then rest. Each step finishes before the next begins.
+   The resting styles above ARE the final frame, so reduced motion and no-JS visitors get the finished composition. */
+@keyframes k-settle { from { opacity: 0; transform: translateY(1.2em) scale(.985); } }
+@keyframes k-settle-b { from { opacity: 0; transform: translate(1em, 1.2em) scale(.985); } }
+@keyframes k-notif { from { opacity: 0; transform: translate(1.4em, -.6em) scale(.98); } }
+@keyframes k-fade { from { opacity: 0; } }
+@keyframes k-show { from { opacity: 1; } }
+@keyframes k-rise { from { opacity: 0; transform: translateY(.5em); } }
+@keyframes k-grow { from { transform: scaleX(0); } }
+@keyframes k-pop { from { opacity: 0; transform: scaleY(.3); } }
+@keyframes k-head { from { left: calc(.8em + (100% - 1.6em) * .08); } }
+@keyframes k-wave { from { clip-path: inset(0 92% 0 0); } }
+@keyframes k-cursor { 0% { transform: translate(-15em, 1.6em); } 60% { transform: translate(-4em, -1.8em); } 100% { transform: none; } }
+@keyframes k-tick { from { background-color: #fff; color: transparent; box-shadow: inset 0 0 0 1.5px #CFCDC3; } }
+@keyframes k-ripple { 0% { transform: scale(.12); opacity: 0; } 14% { opacity: .95; } 100% { transform: scale(1); opacity: .4; } }
+@keyframes k-ring { from { transform: scale(1); opacity: .7; } to { transform: scale(2.1); opacity: 0; } }
+@keyframes k-press { 50% { transform: scale(.94); } }
+@keyframes k-chipbg { from { background-color: #EFEDE4; } }
+@keyframes k-strike { from { transform: scaleX(0); } }
+@keyframes k-hl { from { background-color: transparent; } }
+@keyframes k-dot { from { opacity: .22; transform: scale(.8); } 55% { transform: scale(1.75); } }
+@keyframes k-draw { from { stroke-dashoffset: 1; } }
+@keyframes k-pulse { from { transform: scale(.2); opacity: .95; } to { transform: scale(1.5); opacity: 0; } }
+
+/* Step 1, Make it: Studio arrives, then plays its story */
+.is-playing .studio { animation: k-settle .75s var(--ease-out) .2s both; }
+.is-playing .dot--sky { animation: k-dot .55s ease .45s both; }
+.is-playing .caption { animation: k-rise .3s var(--ease-out) 1.1s both; }
+.is-playing .tx__hl { animation: k-hl .35s ease 1.1s both; }
+.is-playing .tl__sel { animation: k-grow .5s var(--ease-out) 1.15s both; }
+.is-playing .tl__head { animation: k-head 1.1s cubic-bezier(.45, 0, .25, 1) 1.1s both; }
+.is-playing .wave--on { animation: k-wave 1.1s cubic-bezier(.45, 0, .25, 1) 1.1s both; }
+.is-playing .cursor { animation: k-cursor .75s cubic-bezier(.5, 0, .2, 1) 1.15s both; }
+.is-playing .tx__cut { animation: k-hl .3s ease 1.45s both; }
+.is-playing .tx__cut::after { animation: k-strike .28s ease-out 1.5s both; }
+.is-playing .tl__cut { animation: k-pop .3s var(--ease-out) 1.55s both; }
+.is-playing .pub { animation: k-press .2s ease 1.95s both; }
+.is-playing .pub__a { animation: k-show .12s linear 1.95s both; }
+.is-playing .pub__b { animation: k-fade .2s ease 1.97s both; }
+.is-playing .ripple { animation: k-ripple 1s cubic-bezier(.2, .7, .2, 1) 1.97s both; }
+.is-playing .ripple::after { animation: k-ring .9s ease-out 2.05s both; }
+.is-playing .app__tag { animation: k-chipbg .3s ease 1.95s both; }
+.is-playing .tag__a { animation: k-show .15s ease 1.95s both; }
+.is-playing .tag__b { animation: k-fade .2s ease 1.97s both; }
+.is-playing .tick--late { animation: k-tick .25s ease 2.05s both; }
+/* Step 1 ends: Ready to share, Show it */
+.is-playing .chip { animation: k-chipbg .3s ease 2.2s both; }
+.is-playing .chip__raw { animation: k-show .22s ease 2.2s both; }
+.is-playing .chip__ready { animation: k-fade .26s ease 2.2s both; }
+.is-playing .dot--sage { animation: k-dot .55s ease 2.2s both; }
+/* Step 2, See what works: Analytics arrives, then fills in */
+.is-playing .an { animation: k-settle-b .75s var(--ease-out) 2.8s both; }
+.is-playing .dot--peach { animation: k-dot .55s ease 3.15s both; }
+.is-playing .an .num { animation: k-fade .4s ease 3.15s both; }
+.is-playing .spark path { animation: k-draw .8s ease-out 3.1s both; }
+.is-playing .bar i { animation: k-grow .6s var(--ease-out) 3.15s both; }
+.is-playing .src:nth-child(2) .bar i { animation-delay: 3.23s; }
+.is-playing .src--top::before { animation: k-fade .4s ease 3.45s both; }
+/* Step 3: the agent finishes, on top of everything */
+.is-playing .notif { animation: k-notif .65s var(--ease-out) 4.1s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero *, .hero *::before, .hero *::after, .btn { animation: none !important; transition: none !important; }
+  .replay { display: none; }
+}
+
+/* Tablet: stacked, same composition, same legibility */
+/* Below 1280px the row no longer fits, so it becomes a 2x2 grid that keeps three lines: 1|2, between the rows, 3|4 */
+@media (max-width: 1279px) {
+  .trust { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; padding: 0; }
+  .trust li { padding: 14px 0; white-space: normal; }
+  .trust .sep { display: none; }
+  .trust li:nth-child(3), .trust li:nth-child(7) { padding-left: 24px; border-left: 1px solid rgba(36, 39, 32, .22); }
+  .trust li:nth-child(5), .trust li:nth-child(7) { border-top: 1px solid rgba(36, 39, 32, .22); }
+}
+@media (max-width: 899px) {
+  .nav__links { display: none; }
+  .menu { display: block; }
+}
+
+/* Phone: one Studio crop designed for portrait, plus one notification. No miniature desktop collage. */
+@media (max-width: 699px) {
+  .announce__more { display: none; }
+  .topbar { padding-block: 10px; }
+  .brand { font-size: 21px; }
+  .brand svg { width: 30px; height: 30px; }
+  .cta .btn { flex: 1 1 100%; }
+  .scene { width: 100%; font-size: clamp(11.4px, 3.3vw, 12.6px); }
+  .stage { height: auto; padding-bottom: 4.4em; }
+  .studio { position: relative; top: auto; left: auto; width: 100%; }
+  .studio__proj, .xport, .tx { display: none; }
+  .studio__body { grid-template-columns: 1fr; padding-bottom: .8em; }
+  .an { display: none; }
+  .notif { top: auto; bottom: 0; right: -.2em; width: min(21.5em, 94%); }
+  .replay { position: static; margin-top: 1.2em; }
+  .trust { grid-template-columns: 1fr; }
+  .trust li { padding: 11px 0; }
+  .trust li:nth-child(3), .trust li:nth-child(5), .trust li:nth-child(7) { padding-left: 0; border-left: 0; border-top: 1px solid rgba(36, 39, 32, .22); }
+}
+.cta-short { display: none; }
+@media (max-width: 380px) {
+  .app__list li:first-child { display: none; }
+}
+@media (max-width: 359px) {
+  .cta-full { display: none; }
+  .cta-short { display: inline; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#hero">Skip to content</a>
+
+<!-- Official Clacky mark (from clacky.app/favicon.svg), ids prefixed so they cannot collide -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="cm-body" d="M383.41 100H640.59C722.19 100 763 100 799.79 112.14C854.88 131.34 892.66 169.12 911.86 224.21C924 261 924 301.81 924 383.41V640.59C924 722.19 924 763 911.86 799.79C892.66 854.88 854.88 892.66 799.79 911.86C763 924 722.19 924 640.59 924H383.41C301.81 924 261 924 224.21 911.86C169.12 892.66 131.34 854.88 112.14 799.79C100 763 100 722.19 100 640.59V383.41C100 301.81 100 261 112.14 224.21C131.34 169.12 169.12 131.34 224.21 112.14C261 100 301.81 100 383.41 100Z"/>
+    <clipPath id="cm-clip"><use href="#cm-body"/></clipPath>
+    <linearGradient id="cm-bg" x1="0" y1="100" x2="0" y2="924" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFE889"/><stop offset="1" stop-color="#FFAE3D"/></linearGradient>
+    <radialGradient id="cm-sheen" cx="300" cy="180" r="620" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="cm-edge" x1="0" y1="100" x2="0" y2="924" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset=".2" stop-color="#fff" stop-opacity="0"/><stop offset=".85" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient>
+    <filter id="cm-shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000" flood-opacity=".22"/></filter>
+    <filter id="cm-soft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#2A1A40" flood-opacity=".22"/></filter>
+    <linearGradient id="cm-cap" x1="0" y1="330" x2="0" y2="742" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FF8A8E"/><stop offset="1" stop-color="#FF4F66"/></linearGradient>
+    <symbol id="clacky-mark" viewBox="80 80 864 864">
+      <use href="#cm-body" fill="url(#cm-bg)" filter="url(#cm-shadow)"/>
+      <g clip-path="url(#cm-clip)">
+        <rect x="100" y="100" width="824" height="824" fill="url(#cm-sheen)"/>
+        <g filter="url(#cm-soft)"><circle cx="512" cy="528" r="318" fill="#FFF8EC"/></g>
+        <circle cx="512" cy="528" r="318" fill="none" stroke="#E9D9C0" stroke-width="8"/>
+        <circle cx="512" cy="560" r="250" fill="#D93A55"/>
+        <ellipse cx="512" cy="536" rx="254" ry="240" fill="url(#cm-cap)"/>
+        <path d="M390.2 535.195Q427.9 486.185 465.6 535.195" fill="none" stroke="#2B2233" stroke-width="29" stroke-linecap="round"/>
+        <path d="M558.4 535.195Q596.1 486.185 633.8 535.195" fill="none" stroke="#2B2233" stroke-width="29" stroke-linecap="round"/>
+        <path d="M468.5 574.2Q512 568.4 555.5 574.2Q549.7 629.3 512 629.3Q474.3 629.3 468.5 574.2Z" fill="#2B2233"/>
+      </g>
+      <use href="#cm-body" fill="none" stroke="url(#cm-edge)" stroke-width="6" clip-path="url(#cm-clip)"/>
+    </symbol>
+    <path id="wv" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" vector-effect="non-scaling-stroke" d="M2 8.0V28.0M6 9.0V27.0M10 6.4V29.6M14 9.7V26.3M18 9.4V26.6M22 7.0V29.0M26 11.8V24.2M30 9.3V26.7M34 8.5V27.5M38 7.3V28.7M42 10.6V25.4M46 10.9V25.1M50 12.6V23.4M54 7.2V28.8M58 15.9V20.1M62 16.5V19.5M66 15.6V20.4M70 10.6V25.4M74 11.3V24.7M78 11.4V24.6M82 16.1V19.9M86 16.2V19.8M90 9.2V26.8M94 12.9V23.1M98 11.8V24.2M102 9.5V26.5M106 13.2V22.8M110 9.7V26.3M114 9.9V26.1M118 7.0V29.0M122 7.5V28.5M126 8.4V27.6M130 9.4V26.6M134 8.2V27.8M138 9.7V26.3M142 9.2V26.8M146 5.9V30.1M150 5.9V30.1M154 7.0V29.0M158 7.9V28.1M162 8.9V27.1M166 11.5V24.5M170 11.0V25.0M174 12.8V23.2M178 7.5V28.5M182 8.3V27.7M186 7.0V29.0M190 10.3V25.7M194 6.2V29.8M198 6.9V29.1M202 16.5V19.5M206 16.3V19.7M210 15.7V20.3M214 9.6V26.4M218 6.0V30.0M222 8.4V27.6M226 12.8V23.2M230 8.5V27.5M234 7.4V28.6M238 11.2V24.8M242 10.6V25.4M246 10.7V25.3M250 6.1V29.9M254 7.6V28.4"/>
+  </defs>
+</svg>
+
+<div class="announce">
+  <a href="https://clacky.app/changelog/"><b>Clacky 2.7 is here.</b> <span class="announce__more"><span class="announce__link">More ways to make, share, and ship from your Mac.</span></span></a>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="https://clacky.app/" aria-label="Clacky home">
+    <svg aria-hidden="true"><use href="#clacky-mark"/></svg>
+    clacky
+  </a>
+  <nav class="nav" aria-label="Primary">
+    <ul class="nav__links">
+      <li><a href="https://clacky.app/features/">Features</a></li>
+      <li><a href="#for-makers">For makers</a></li>
+      <li><a href="https://clacky.app/#plans">Pricing</a></li>
+      <li><a href="https://clacky.app/privacy/">Privacy</a></li>
+    </ul>
+    <a class="btn btn--primary btn--sm" href="https://clacky.app/try/"><span class="cta-full">Try Clacky free</span><span class="cta-short">Try free</span></a>
+    <details class="menu">
+      <summary aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></summary>
+      <ul class="menu__panel">
+        <li><a href="https://clacky.app/features/">Features</a></li>
+        <li><a href="#for-makers">For makers</a></li>
+        <li><a href="https://clacky.app/#plans">Pricing</a></li>
+        <li><a href="https://clacky.app/privacy/">Privacy</a></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+
+<main>
+  <section class="hero is-playing" id="hero" aria-labelledby="hero-title">
+    <div class="hero__grid">
+
+      <h1 class="title" id="hero-title">
+        <span class="title__line">Make it<span class="dot dot--sky">.</span></span>
+        <span class="title__line">Show it<span class="dot dot--sage">.</span></span>
+        <span class="title__line">See what works<span class="dot dot--peach">.</span></span>
+      </h1>
+      <p class="lede">Record better demos, keep your AI workflow moving, and understand what brings people to your product. Clacky brings useful maker tools closer together, so you can spend less time managing your setup and more time making things people care about.</p>
+      <div class="cta">
+        <a class="btn btn--primary" href="https://clacky.app/try/">Try Clacky free for 7 days</a>
+        <a class="btn btn--quiet" href="https://clacky.app/features/">Explore the features</a>
+      </div>
+      <p class="fine"><strong>Card at checkout, $0 today. Cancel anytime.</strong>Every feature included. Works on 2 Macs. For macOS 13 or later.</p>
+
+      <figure class="visual">
+        <div class="scene">
+          <div class="stage" role="img" aria-label="A preview of Clacky's Studio turning a screen recording into a captioned demo that is ready to share, with a small analytics panel using sample data and a notification that a coding agent has finished.">
+
+            <div class="win studio">
+              <div class="studio__bar">
+                <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="studio__title">Studio</span>
+                <span class="studio__proj">Launch walkthrough</span>
+                <span class="chip">
+                  <span class="chip__raw">Raw recording</span>
+                  <span class="chip__ready"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.2 4.2L19 7.2"/></svg>Ready to share</span>
+                </span>
+                <span class="xport">Export for X</span>
+              </div>
+              <div class="studio__body">
+                <div class="vid">
+                  <div class="app">
+                    <div class="app__side"><i></i><i></i><i></i><i></i></div>
+                    <div class="app__main">
+                      <div class="app__head"><b>Release 2.0</b><span class="app__tag"><span class="tag__a">Draft</span><span class="tag__b">Live</span></span></div>
+                      <ul class="app__list">
+                        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.2 4.2L19 7.2"/></svg></span>Write the changelog</li>
+                        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.2 4.2L19 7.2"/></svg></span>Record the demo</li>
+                        <li><span class="tick tick--late"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.2 4.2L19 7.2"/></svg></span>Post the announcement</li>
+                      </ul>
+                      <div class="app__foot">
+                        <span class="pub">
+                          <span class="pub__a">Publish</span>
+                          <span class="pub__b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.2 4.2L19 7.2"/></svg>Published</span>
+                          <span class="ripple"></span>
+                          <svg class="cursor" viewBox="0 0 20 24"><path d="M3 2.2v17.6l4.6-4.3 3.1 7 3.2-1.4-3.1-6.9H17z" fill="#15170F" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="caption-wrap"><span class="caption">Click Publish and it goes live.</span></div>
+                </div>
+                <div class="tx">
+                  <p class="tx__h">Transcript</p>
+                  <p>Okay, here's the update.</p>
+                  <p class="tx__on"><span class="tx__cut">Um,</span> <span class="tx__hl">click Publish and it goes live.</span></p>
+                </div>
+              </div>
+              <div class="tl">
+                <svg class="wave" viewBox="0 0 256 36" preserveAspectRatio="none"><use href="#wv"/></svg>
+                <svg class="wave wave--on" viewBox="0 0 256 36" preserveAspectRatio="none"><use href="#wv"/></svg>
+                <i class="tl__sel"></i><i class="tl__cut"></i><i class="tl__head"></i>
+              </div>
+            </div>
+
+            <div class="win an">
+              <div class="an__head"><b>Analytics</b><span class="tag">Sample data</span></div>
+              <div class="an__vis">
+                <div><span class="an__num num">8,420</span><span class="an__lbl">Visitors, last 7 days</span></div>
+                <svg class="spark" viewBox="0 0 80 28"><path pathLength="1" d="M2 23C10 21 14 12 22 14S36 23 44 15 58 4 66 8 76 6 78 3"/></svg>
+              </div>
+              <ul class="an__src">
+                <li class="src src--top"><span>x.com</span><span class="bar"><i style="--w:84%"></i></span><b class="num">42%</b></li>
+                <li class="src"><span>Newsletter</span><span class="bar"><i style="--w:54%"></i></span><b class="num">27%</b></li>
+              </ul>
+              <div class="an__foot">
+                <div><span class="an__lbl">Visit to trial</span><b class="num">4.2%</b></div>
+                <div><span class="an__lbl">MRR</span><b class="num">$1,240</b></div>
+              </div>
+            </div>
+
+            <div class="notif">
+              <svg class="notif__icon" aria-hidden="true"><use href="#clacky-mark"/></svg>
+              <span class="notif__txt"><b>Task completed</b><span>Your coding agent has finished.</span></span>
+              <span class="notif__time">now</span>
+            </div>
+          </div>
+
+          <button class="replay" type="button" aria-label="Replay the Studio demo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v4.2h4.2"/></svg>
+            Replay
+          </button>
+        </div>
+      </figure>
+
+      <ul class="trust">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.2 5 6v5.3c0 4.2 2.8 7.8 7 9.5 4.2-1.7 7-5.3 7-9.5V6l-7-2.8Z"/><path d="m9 12 2.2 2.2L15.2 10"/></svg>Signed and notarized by Apple</li>
+        <li class="sep" aria-hidden="true"></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="11.5" rx="2"/><path d="M2.5 19.5h19"/><rect x="10" y="9.4" width="4" height="3.4" rx=".8"/><path d="M10.8 9.4V8.6a1.2 1.2 0 0 1 2.4 0v.8"/></svg>Screen recordings stay on your Mac</li>
+        <li class="sep" aria-hidden="true"></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 8.5 8.5 3.6 3.6 0 0 1-3.6-3.6A3.6 3.6 0 0 1 12 3.5Z"/><path d="M8.6 11.6h.01M11.6 15.4h.01M15.2 14.2h.01"/></svg>Cookie-free website analytics</li>
+        <li class="sep" aria-hidden="true"></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/></svg>Built independently, updated regularly</li>
+      </ul>
+
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const hero = document.querySelector('.hero');
+  const studio = hero.querySelector('.studio');
+  const replay = hero.querySelector('.replay');
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+
+  const play = () => { hero.classList.remove('is-playing'); void hero.offsetWidth; hero.classList.add('is-playing'); };
+
+  replay.hidden = calm.matches;
+  calm.addEventListener('change', () => { replay.hidden = calm.matches; });
+  replay.addEventListener('click', play);
+
+  // opened in a background tab: hold the finished state, then play once the visitor can see it
+  if (document.hidden) {
+    hero.classList.remove('is-playing');
+    document.addEventListener('visibilitychange', play, { once: true });
+  }
+
+  // a visitor's own click inside Studio gets the product's ripple
+  studio.addEventListener('pointerdown', e => {
+    if (calm.matches) return;
+    const r = studio.getBoundingClientRect();
+    const p = document.createElement('i');
+    p.className = 'pulse';
+    p.style.left = e.clientX - r.left + 'px';
+    p.style.top = e.clientY - r.top + 'px';
+    p.addEventListener('animationend', () => p.remove());
+    studio.append(p);
+  });
+})();
+</script>
+</body>
+</html>
